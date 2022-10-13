@@ -1,10 +1,14 @@
 import React from "react";
+import { Images } from "../data/constants";
 
 function Footer(props) {
   return (
-    <div>
-      <button>this is footer</button>
-    </div>
+    <footer>
+      <img src={Images.LOGO} alt="" />
+      <span>
+        Made with ❤ and <b>React.js</b>.
+      </span>
+    </footer>
   );
 }
 
