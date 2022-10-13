@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import postAPI from "../api/postAPI";
+import moment from "moment";
 
 function Write(props) {
     const { state } = useLocation();
@@ -12,9 +14,44 @@ function Write(props) {
 
     const navigate = useNavigate();
 
-    const handleClick = () => {
+    const upload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file)
+            const res = await postAPI.uploadImage();
+            return res.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
+    const handleClick = async (e) => {
+        e.prevenDefault();
+        const imgUrl = await upload();
+
+        try {
+            state ?
+                await postAPI.updatePost({
+                    id: state?.id,
+                    body: {
+                        title,
+                        desc: value,
+                        cat,
+                        img: file ? imgUrl : "",
+                    }
+                })
+                : await postAPI.createPost({
+                    title,
+                    desc: value,
+                    cat,
+                    img: file ? imgUrl : "",
+                    date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }
+
 
     return (
         <div className="add">
